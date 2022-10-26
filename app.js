@@ -21,26 +21,27 @@ const app = Vue.createApp({
       this.monsterHealth = 100;
       this.currentRound = 0;
       this.winner = null;
-      this.actions.push(START);
+      this.actions = [];
     },
     attackMonster() {
       this.currentRound++;
       const attackVal = getRandomValue(5, 12);
       this.monsterHealth -= attackVal;
-      actions.push(`${P_ATTACK} with the damage ${attackVal}`);
+      this.addAction("player", "attack", attackVal);
       this.attackPlayer();
     },
     attackPlayer() {
       const attackVal = getRandomValue(8, 15);
       this.playerHealth = this.playerHealth - attackVal;
-      actions.push(`${M_ATTACK} with the damage ${attackVal}`);
 
-      console.log(attackVal, this.playerHealth);
+      this.addAction("monster", "attack", attackVal);
     },
     specailAttackMonster() {
       this.currentRound++;
       const attackVal = getRandomValue(15, 25);
       this.monsterHealth -= attackVal;
+      this.addAction("player", "attack", attackVal);
+
       this.attackPlayer();
     },
     healPlayer() {
@@ -51,7 +52,19 @@ const app = Vue.createApp({
       } else {
         this.playerHealth += healVal;
       }
+      this.addAction("player", "heal", healVal);
+
       this.attackPlayer();
+    },
+    surrender() {
+      this.winner = "monster";
+    },
+    addAction(who, what, val) {
+      this.actions.unshift({
+        actionBy: who,
+        action: what,
+        actionValue: val,
+      });
     },
   },
   computed: {
@@ -75,7 +88,7 @@ const app = Vue.createApp({
       }
     },
     monsterHealth(val) {
-      if (val <= 0 && this.monsterHealth <= 0) {
+      if (val <= 0 && this.playerHealth <= 0) {
         //it's a draw
         this.winner = "draw";
       } else if (val <= 0) {
