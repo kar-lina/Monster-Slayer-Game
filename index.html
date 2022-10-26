@@ -37,6 +37,13 @@
         <button @click="healPlayer">HEAL</button>
         <button>SURRENDER</button>
       </section>
+      <section v-if="winner" class="container">
+        <h3>Game over</h3>
+        <h3 v-if="winner ==='monster'">You lost:(</h3>
+        <h3 v-else-if="winner==='player'">You won!</h3>
+        <h3 v-else>It's a draw</h3>
+        <button @click="startGame">RESTART</button>
+      </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
         <ul></ul>
